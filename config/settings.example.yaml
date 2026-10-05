@@ -1,0 +1,23 @@
+database:
+  url: sqlite:///./aisys_library.db
+  backup_dir: ./backups
+  enable_sqlite_foreign_keys: true
+
+app:
+  host: 127.0.0.1
+  port: 8001
+  debug: false
+
+library:
+  max_fine_limit: 50.0
+  default_due_days: 14
+  default_shelf_location: A1
+
+security:
+  gate_alarm_enabled: true
+  mock_cctv_snapshot_dir: ./cctv_captures
+
+notifications:
+  email_enabled: true
+  sms_enabled: true
+  print_enabled: true
