@@ -48,21 +48,51 @@ The project uses a layered architecture:
 - backup and restore workflow primitives
 - offline release bundle creation support
 
-## Local setup
+## Local setup for a new system
+
+### 1) Prerequisites
+- Python 3.11 or newer
+- Git
+- Internet access for package installation
+
+### 2) Clone the repository
 ```powershell
-cd C:\Users\shara\OneDrive\Desktop\PROJECTS\AISYS\aisys-library-system
+git clone https://github.com/sharanya9705/AISYS-RFID.git
+cd AISYS-RFID
+```
+
+### 3) Create a virtual environment
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+### 4) Install dependencies
+```powershell
+py -m pip install --upgrade pip
 py -m pip install -r requirements.txt
 ```
 
-## Run the API
+### 5) Validate the app installation
 ```powershell
-cd C:\Users\shara\OneDrive\Desktop\PROJECTS\AISYS\aisys-library-system
+py -m pytest -q
+```
+
+The expected result is all acceptance tests passing. In the project environment, the verified result was:
+- 6 tests passed
+- 1 warning from the FastAPI/Starlette test client deprecation path
+
+## Run the API
+From the project root:
+```powershell
+cd AISYS-RFID\aisys-library-system
 py -m uvicorn main:app --host 127.0.0.1 --port 8001 --reload
 ```
 
 ## Run the dashboard
+Open a second terminal and run:
 ```powershell
-cd C:\Users\shara\OneDrive\Desktop\PROJECTS\AISYS\aisys-library-system
+cd AISYS-RFID\aisys-library-system
 streamlit run streamlit_app.py
 ```
 
@@ -71,15 +101,29 @@ streamlit run streamlit_app.py
 curl http://127.0.0.1:8001/health
 ```
 
-## Automated verification
-```powershell
-cd C:\Users\shara\OneDrive\Desktop\PROJECTS\AISYS\aisys-library-system
-pytest -q
+Example success response:
+```json
+{"status": "HEALTHY", "system_version": "1.0.0-offline", "database": "CONNECTED"}
 ```
 
-Verified result from the project environment:
-- 6 tests passed
-- 1 warning from Starlette/FastAPI test client deprecation
+## Troubleshooting
+If the API port is already in use:
+```powershell
+netstat -ano | findstr :8001
+taskkill /PID <PID> /F
+```
+
+If the app does not start because the working directory is wrong, make sure you run the commands from:
+```powershell
+AISYS-RFID\aisys-library-system
+```
+
+## Backup and restore workflow
+```powershell
+cd AISYS-RFID\aisys-library-system
+py scripts/backup_db.py --db ./aisys_library.db --backup-dir ./backups
+py scripts/restore_db.py --backup ./backups/aisys_library_backup.db --db ./aisys_library.db
+```
 
 ## Backup and restore workflow
 ```powershell
